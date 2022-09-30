@@ -4,87 +4,44 @@
  *  (including 3rd party web sites) or distributed to other students.
  *
  *  Name: Pranav Patel
- *  Student ID: 119945212  
+ *  Student ID: 119954212 
  *  Date: 30/09/2022
  *
- *  Online (Cyclic) Link: 
+ *  Online (Cyclic) Link: https://good-cyan-haddock-hose.cyclic.app/about
  *
  ********************************************************************************/
 
-
- var express = require("express");
- var app = express();
- var path = require("path");
- var blog_service = require("./blog-service.js");
- const exphbs = require('express-handlebars');
- const bodyParser = require('body-parser');
+ const express = require('express');
+ const path = require('path');
+ const service = require('./blog-service');
  
- var HTTP_PORT = process.env.PORT || 8080;
+ const app = express();
  
- function onHttpStart() {
-     console.log("Express http server listening on: " + HTTP_PORT);
-     return new Promise((res, req) => {
-         blog_service.initialize().then((data) => {
-             console.log(data)
-         }).catch((err) => {
-             console.log(err);
-         });
-     });
- }
+ const port = process.env.port || 8080;
  
+ app.use(express.static('public'));
  
- app.get("/", function(req,res){
-   res.redirect("/about");
- });
+ app.get('/', (req, res) => {
+     res.redirect('/about');
+ })
  
+ app.get('/about', (req, res) => {
+     res.sendFile(path.join(__dirname, 'views/about.html'));
+ })
  
+ app.get('/blog', (req, res) => {
+     service.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
+ })
  
- app.use(express.static('public')); 
- app.use(bodyParser.urlencoded({ extended: true }));
- app.engine(".hbs", exphbs.engine({
-     extname: ".hbs",
-     defaultLayout: 'layout',
-     helpers: {
-         equal: (lvalue, rvalue, options) => {
-             if (arguments.length < 3)
-                 throw new Error("Handlebars Helper equal needs 2 parameters");
-             if (lvalue != rvalue) {
-                 return options.inverse(this);
-             } else {
-                 return options.fn(this);
-             }
-         }
-     }
- }));
- app.set("view engine", ".hbs");
+ app.get('/posts', (req, res) => {
+     service.getAllPosts().then(data => res.json(data)).catch(err => res.json(err));
+ })
  
+ app.get('/categories', (req, res) => {
+     service.getCategories().then(data => res.json(data)).catch(err => res.json(err));
+ })
  
- app.get("/about", function(req,res){
-   res.sendFile(path.join(__dirname, "/views/about.html"));
- });
- 
- 
- 
- 
- app.get("/categories", (req, res) => {
-   blog_service.getCategories().then((data) => {
-       res.json(data);
-       
-   }).catch((err) => {
-       res.json({ message: err });
-   });
- });
- 
- 
- app.get("/posts", (req, res) => {
-   blog_service.getAllPosts().then((data) => {
-       res.json(data);
-       
-   }).catch((err) => {
-       res.json({ message: err });
-   });
- });
- 
- 
- // setup http server to listen on HTTP_PORT
- app.listen(HTTP_PORT, onHttpStart);
+ app.listen(port, () => {
+     console.log(`Listening on http://localhost:${port}`);
+     service.initialize().then((data) => console.log(data)).catch((err) => console.log(err));
+ })
