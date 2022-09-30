@@ -15,18 +15,26 @@ function initialize () {
     return new Promise((resolve, reject) => {
         let message = "";
         fs.readFile(path.join(__dirname, "data/posts.json"), 'utf8', (err, data) => {
-            if (err) {
-                message = "Error occurred while loading Posts data";
-            };
-            posts = JSON.parse(data);
+            if (err) 
+            {
+                result = "Error occurred while loading Posts data";
+            }
+            else
+            {
+                posts = JSON.parse(data);
+            }
         });
         fs.readFile(path.join(__dirname, "data/categories.json"), 'utf8', (err, data) => {
-            if (err) {
-                message = "Error occurred while loading Categories data";
+            if (err) 
+            {
+                result = "Error occurred while loading Categories data";
             }
-            categories = JSON.parse(data);
+            else
+            {
+                categories = JSON.parse(data);
+            }
         });
-
+        
         if(message.length) {
             reject(message);
         } else {
