@@ -1,47 +1,58 @@
-/*********************************************************************************
- *  WEB322 – Assignment 02
- *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
- *  (including 3rd party web sites) or distributed to other students.
- *
- *  Name: Pranav Patel
- *  Student ID: 119945212  
- *  Date: 30/09/2022
- *
- *  Online (Cyclic) Link: 
- *
- ********************************************************************************/
+const fs = require("fs"); // required at the top of your module
+const path = require("path");
 
- const express = require('express');
- const path = require('path');
- const service = require('./blog-service');
- 
- const app = express();
- 
- const port = process.env.port || 8080;
- 
- app.use(express.static('public'));
- 
- app.get('/', (req, res) => {
-     res.redirect('/about');
- })
- 
- app.get('/about', (req, res) => {
-     res.sendFile(path.join(__dirname, 'views/about.html'));
- })
- 
- app.get('/blog', (req, res) => {
-     service.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
- })
- 
- app.get('/posts', (req, res) => {
-     service.getAllPosts().then(data => res.json(data)).catch(err => res.json(err));
- })
- 
- app.get('/categories', (req, res) => {
-     service.getCategories().then(data => res.json(data)).catch(err => res.json(err));
- })
- 
- app.listen(port, () => {
-     console.log(`Listening on http://localhost:${port}`);
-     service.initialize().then((data) => console.log(data)).catch((err) => console.log(err));
- })
+let posts = [];
+let categories = [];
+
+module.exports = {
+    initialize,
+    getAllPosts,
+    getPublishedPosts,
+    getCategories
+}
+
+function initialize () {
+    return new Promise((resolve, reject) => {
+        let message = "";
+        fs.readFile(path.join(__dirname, "data/posts.json"), 'utf8', (err, data) => {
+            if (err) {
+                message = "Error occurred while loading Posts data";
+            };
+            posts = JSON.parse(data);
+        });
+        fs.readFile(path.join(__dirname, "data/categories.json"), 'utf8', (err, data) => {
+            if (err) {
+                message = "Error occurred while loading Categories data";
+            }
+            categories = JSON.parse(data);
+        });
+
+        if(message.length) {
+            reject(message);
+        } else {
+            resolve("Initialized successfully");
+        }
+    });
+}
+
+function getAllPosts() {
+    return new Promise((resolve, reject) => {
+        if(posts.length) resolve(posts)
+        else reject("No results returned");
+    })
+}
+
+function getPublishedPosts() {
+    return new Promise((resolve, reject) => {
+        let publishPost = posts.filter(post => post.published === true);
+        if(publishPost.length) resolve(publishPost)
+        else reject("No results returned");
+    })
+}
+
+function getCategories() {
+    return new Promise((resolve, reject) => {
+        if(categories.length) resolve(categories)
+        else reject("No results returned");
+    })
+}
