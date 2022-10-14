@@ -28,7 +28,7 @@ cloudinary.config({
     secure: true
 });
 
-const upload = multer(); // no { storage: storage } since we are not using disk storage
+const upload = multer(); 
 
 
 const app = express();
@@ -82,7 +82,7 @@ app.listen(port, () => {
 
 
 
-// Adding POST routes
+
 app.post('/posts/add', upload.single("featureImage"), (req, res) => {
     if(req.file){
         let streamUpload = (req) => {
