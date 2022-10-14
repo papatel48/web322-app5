@@ -1,4 +1,4 @@
-const fs = require("fs"); // required at the top of your module
+const fs = require("fs"); 
 const path = require("path");
 
 let posts = [];
