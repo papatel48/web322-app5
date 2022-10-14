@@ -1,11 +1,11 @@
 /*********************************************************************************
- *  WEB322 – Assignment 02
+ *  WEB322 – Assignment 03
  *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
  *  (including 3rd party web sites) or distributed to other students.
  *
  *  Name: Pranav Patel
  *  Student ID: 119954212 
- *  Date: 30/09/2022
+ *  Date: 14/10/2022
  *
  *  Online (Cyclic) Link: https://good-cyan-haddock-hose.cyclic.app/about
  *
@@ -22,9 +22,9 @@ const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 
 cloudinary.config({
-    cloud_name: 'dga12xwb2',
-    api_key: '694932861513843',
-    api_secret: '8kE3Cp8pA7PAe4RzWO4ICj9jO1Y',
+    cloud_name: 'dlforgeaf',
+    api_key: '283894241764722',
+    api_secret: 'SBwBWeJxTJCO25SNLYrbK3P_X_g',
     secure: true
 });
 
